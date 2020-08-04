@@ -53,3 +53,31 @@ clean-webpack-plugin 是一个比较普及的管理插件，让我们安装和�
 通过 manifest，webpack 能够对「你的模块映射到输出 bundle 的过程」保持追踪
 
 通过使用 WebpackManifestPlugin，可以直接将数据提取到一个 json 文件，以供使用
+
+
+
+# 开发
+## 使用source map
+可以方便的定位到错误是哪个源文件导致的，在webpack.config.js中新增一个属性devtool，值为`inline-source-map`
+
+## 选择一个开发工具
+每次要编译代码时，手动运行 npm run build 就会变得很麻烦。
+
+webpack 中有几个不同的选项，可以帮助你在代码发生变化后自动编译代码：
+* webpack's Watch Mode
+* webpack-dev-server
+* webpack-dev-middleware
+
+多数场景中，都是用`webpack-dev-server`
+
+### 使用观察模式
+package.json的scripts里添加一个watch属性，值为`webpack --watch`
+### 使用webpack-dev-server
+webpack-dev-server 为你提供了一个简单的 web 服务器，并且能够实时重新加载(live reloading)。
+
+`npm install --save-dev webpack-dev-server`
+
+### 使用webpack-dev-middleware
+webpack-dev-middleware 是一个容器(wrapper)，它可以把 webpack 处理后的文件传递给一个服务器(server)。 webpack-dev-server 在内部使用了它，同时，它也可以作为一个单独的包来使用，以便进行更多自定义设置来实现更多的需求
+
+`npm install --save-dev express webpack-dev-middleware`
