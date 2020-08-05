@@ -81,3 +81,44 @@ webpack-dev-server 为你提供了一个简单的 web 服务器，并且能够�
 webpack-dev-middleware 是一个容器(wrapper)，它可以把 webpack 处理后的文件传递给一个服务器(server)。 webpack-dev-server 在内部使用了它，同时，它也可以作为一个单独的包来使用，以便进行更多自定义设置来实现更多的需求
 
 `npm install --save-dev express webpack-dev-middleware`
+
+# 模块热替换
+## 启用HMR
+webpack.config.js的devServer添加hot属性，值为true。注意，我们还添加了NamedModulesPlugin，以便更容易查看要修补(patch)的依赖。
+
+然后在index.js里添加如下代码
+``` JavaScript
+if (module.hot) {
+    module.hot.accept('./print.js', function() {
+        console.log('Accepting the updated printMe module!');
+        printMe();
+    });
+}
+```
+## 通过Node.js API
+当使用 webpack dev server 和 Node.js API 时，不要将 dev server 选项放在 webpack 配置对象(webpack config object)中。而是，在创建选项时，将其作为第二个参数传递。
+
+想要启用 HMR，还需要修改 webpack 配置对象，使其包含 HMR 入口起点。webpack-dev-server package 中具有一个叫做 `addDevServerEntrypoints` 的方法，你可以通过使用这个方法来实现。这是关于如何使用的一个小例子：
+`new WebpackDevServer(compiler, options)`
+``` JavaScript
+//dev-server.js
+const webpackDevServer = require('webpack-dev-server');
+const webpack = require('webpack');
+
+const config = require('./webpack.config.js');
+const options = {
+  contentBase: './dist',
+  hot: true,
+  host: 'localhost'
+};
+
+webpackDevServer.addDevServerEntrypoints(config, options);
+const compiler = webpack(config);
+const server = new webpackDevServer(compiler, options);
+
+server.listen(5000, 'localhost', () => {
+  console.log('dev server listening on port 5000');
+});
+```
+## HMR修改样式表
+用`style-loader`和`css-loader`
