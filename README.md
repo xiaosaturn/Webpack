@@ -266,3 +266,39 @@ require(['webpackNumbers'], function (webpackNumbers) {
 ## 基本配置(Base Configuration)
 
 ## 外部化lodash
+
+# 环境变量
+``` JavaScript
+const path = require('path');
+
+module.exports = env => {
+  // Use env.<YOUR VARIABLE> here:
+  console.log('NODE_ENV: ', env.NODE_ENV); // 'local'
+  console.log('Production: ', env.production); // true
+
+  return {
+    entry: './src/index.js',
+    output: {
+      filename: 'bundle.js',
+      path: path.resolve(__dirname, 'dist'),
+    },
+  };
+};
+```
+
+# 构建性能(Build Performance)
+
+# 依赖管理
+* es6 modules
+* commonjs
+* amd
+
+# 脚手架(Scaffolding)
+## Running a scaffold
+`webpack-cli init <your-scaffold>`
+
+# Tree Shaking
+
+# 生产(Production)
+
+
