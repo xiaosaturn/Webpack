@@ -122,3 +122,88 @@ server.listen(5000, 'localhost', () => {
 ```
 ## HMR修改样式表
 用`style-loader`和`css-loader`
+
+# 代码分离
+代码分离是 webpack 中最引人注目的特性之一。此特性能够把代码分离到不同的 bundle 中，然后可以按需加载或并行加载这些文件。代码分离可以用于获取更小的 bundle，以及控制资源加载优先级，如果使用合理，会极大影响加载时间。
+
+三种方法：
+* 入口起点：使用`entry`配置手动地分离代码
+* 防止重复：使用`CommonsChunkPlugin`去重和分离chunk
+* 动态导入：通过模块的内联函数调用来分离代码
+
+## 入口起点(entry point)
+`lodash`模块在两个bundle中造成重复引用
+
+## 防止重复(prevent duplication)
+可以使用`CommonsChunkPlugin`插件将公共的依赖模块提取到已有的入口 chunk 中，或者提取到一个新生成的 chunk。
+
+webpack.optimize.CommonsChunkPlugin has been removed, please use config.optimization.splitChunks instead.
+
+在webpack.config.js里添加optimization属性，如下所示
+``` JavaScript
+module.exports = {
+    mode: 'development',
+    entry: {
+        app: './src/index.js',
+        another: './src/another-module.js',
+    },
+    devtool: 'inline-source-map', //方便调试的
+    devServer: {
+        contentBase: './dist', //方便实时刷新的
+        hot: true
+    },
+    plugins: [
+        new CleanWebpackPlugin(),
+        new HtmlWebpackPlugin({
+            title: 'Output Management'
+        }),
+        new webpack.NamedModulesPlugin(),
+        new webpack.HotModuleReplacementPlugin(),
+    ],
+    //抽取公共的模块
+    optimization: {
+        splitChunks: {
+            chunks: 'all'
+        }
+    },
+    output: {
+        filename: '[name].bundle.js',
+        path: path.resolve(__dirname, 'dist'),
+        publicPath: '/'
+    },
+    module: {
+        rules: [
+            {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader']
+            }
+        ]
+    }
+};
+```
+
+## 动态导入(Dynamic Imports)
+``` JavaScript
+// src/index.js
+function getComponent() {
+    return import(/* webpackChunkName: 'lodash' */ 'lodash').then(({ default: _ }) => {
+        const element = document.createElement('div');
+        element.innerHTML = _.join(['Hello', 'Webpack'], ' ');
+        return element;
+    }).catch(error => 'An error occurred while loading the component');
+}
+
+getComponent().then(component => {
+    document.body.appendChild(component);
+})
+/*
+The reason we need default is that since webpack 4, when importing a CommonJS module, the import will no longer resolve to the value of module.exports, it will instead create an artificial namespace object for the CommonJS module. For more information on the reason behind this, read webpack 4: import() and CommonJs @{https://medium.com/webpack/webpack-4-import-and-commonjs-d619d626b655} 
+*/
+```
+
+## Prefetching/Preloading modules
+`import(/* webpackPrefetch: true */ 'LoginModal');·`
+
+## bundle分析(Bundle Analysis)
+
+
