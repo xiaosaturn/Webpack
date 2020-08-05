@@ -240,4 +240,29 @@ module.exports = {
 
 ## 模块标识符(Module Identifiers)
 
+# 创建 library(Authoring Library)
+## 创建一个 library
+新建一个ref.json文件
 
+* ES2015 module import:
+``` JavaScript
+import * as webpackNumbers from 'webpack-numbers';
+// ...
+webpackNumbers.wordToNum('Two');
+```
+* CommonJS module require:
+``` JavaScript
+const webpackNumbers = require('webpack-numbers');
+// ...
+webpackNumbers.wordToNum('Two');
+```
+* AMD module require:
+``` JavaScript
+require(['webpackNumbers'], function (webpackNumbers) {
+// ...
+    webpackNumbers.wordToNum('Two');
+});
+```
+## 基本配置(Base Configuration)
+
+## 外部化lodash
