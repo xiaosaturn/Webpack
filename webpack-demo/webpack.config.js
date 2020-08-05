@@ -16,21 +16,30 @@ module.exports = {
     plugins: [
         new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
-            title: 'Output Management'
+            title: 'Caching'
         }),
         new webpack.NamedModulesPlugin(),
         new webpack.HotModuleReplacementPlugin(),
     ],
     optimization: {
+        moduleIds: 'hashed',
         splitChunks: {
-            chunks: 'all'
-        }
+            // chunks: 'all',
+            cacheGroups: {
+                vendor: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: 'vendors',
+                    chunks: 'all'
+                }
+            }
+        },
+        runtimeChunk: 'single' // Set it to single to create a single runtime bundle for all chunks
     },
     output: {
-        filename: '[name].bundle.js',
+        filename: '[name].[hash].js',
         // chunkFilename: '[name].bundle.js', //动态导入
         path: path.resolve(__dirname, 'dist'),
-        publicPath: '/'
+        publicPath: './'
     },
     module: {
         rules: [

@@ -206,4 +206,38 @@ The reason we need default is that since webpack 4, when importing a CommonJS mo
 
 ## bundle分析(Bundle Analysis)
 
+# 缓存
+## 输出文件的文件名(Output Filenames)
+``` JavaScript
+//webpack.config.js
+module.exports = {
+    output: {
+        filename: '[name].[hash].js' //添加一个hash
+    }
+};
+```
+
+## 提取模板(Extracting Boilerplate)
+``` JavaScript
+//webpack.config.js
+module.exports = {
+    optimization: {
+        moduleIds: 'hashed',
+        splitChunks: {
+            // chunks: 'all',
+            cacheGroups: {
+                vendor: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: 'vendors',
+                    chunks: 'all'
+                }
+            }
+        },
+        runtimeChunk: 'single' // Set it to single to create a single runtime bundle for all chunks
+    },
+};
+```
+
+## 模块标识符(Module Identifiers)
+
 

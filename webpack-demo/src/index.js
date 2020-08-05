@@ -1,4 +1,4 @@
-import printMe from './print.js';
+// import Print from './print.js';
 import './styles.css';
 
 // function component() {
@@ -48,6 +48,7 @@ async function getComponent() {
     const element = document.createElement('div');
     const { default: _ } = await import(/* webpackChunkName: "lodash" */ 'lodash');
     element.innerHTML = _.join(['async await 异步形式的:' + 'Hello', 'Webpack'], ' ');
+    // element.onclick = Print.bind(null, 'Hello webpack 模块标识符');
     return element;
 }
 
